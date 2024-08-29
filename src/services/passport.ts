@@ -15,7 +15,7 @@ passport.use(
   new Strategy(options, async (payload, done) => {
     const userRepository = getRepository(User);
     const user = await userRepository.findOne({
-      id: payload.id
+     where:{ id: payload.id}
     });
 
     if (user) {

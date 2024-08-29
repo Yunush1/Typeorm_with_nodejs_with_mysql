@@ -23,7 +23,7 @@ export const getPlayerById = async (req: Request, res: Response) => {
   const playerRepository = getRepository(Player);
 
   const player = await playerRepository.find({
-    id: Number(req.params.id)
+   where:{ id: Number(req.params.id)}
   });
 
   res.send(player);
@@ -39,7 +39,7 @@ export const updatePlayerById = async (req: Request, res: Response) => {
   });
 
   const updatedPlayer = await playerRepository.find({
-    id: Number(req.params.id)
+   where:{ id: Number(req.params.id)}
   });
 
   res.send(updatedPlayer);
@@ -49,7 +49,7 @@ export const deletePlayerById = async (req: Request, res: Response) => {
   const playerRepository = getRepository(Player);
 
   const player = await playerRepository.find({
-    id: Number(req.params.id)
+   where:{ id: Number(req.params.id)}
   });
 
   await playerRepository.remove(player);

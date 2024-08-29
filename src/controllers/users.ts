@@ -11,11 +11,11 @@ const SALT_ROUND = Number(process.env.BCRYPT_SALT_ROUND);
 const SECRET_KEY = process.env.SECRET_OR_KEY;
 
 export const register = async (req: Request, res: Response) => {
-  const { name, email, password } = req.body;
+  const {firstname, lastname, email, password} = req.body;
 
   const userRepository = getRepository(User);
   const existingUser = await userRepository.findOne({
-    email
+    where:{email}
   });
 
   if (existingUser) {
@@ -26,8 +26,10 @@ export const register = async (req: Request, res: Response) => {
     const salt = await bcrypt.genSalt(SALT_ROUND);
     const hashPassword = await bcrypt.hash(password, salt);
 
+    
     const user = await userRepository.create({
-      name,
+      firstname,
+      lastname,
       email,
       password: hashPassword
     });
@@ -44,7 +46,7 @@ export const login = async (req: Request, res: Response) => {
   const userRepository = getRepository(User);
 
   const user = await userRepository.findOne({
-    email
+    where:{email}
   });
 
   if (!user) {
@@ -55,10 +57,12 @@ export const login = async (req: Request, res: Response) => {
     if (isSuccess) {
       const payload = {
         id: user.id,
-        name: user.name
+        name: user.firstname
       };
       const token = jwt.sign(payload, SECRET_KEY, { expiresIn: 3600 });
-      res.status(200).send({ token });
+      res.status(200).send({ token:token,
+        user:user
+       });
     } else {
       res.status(400).send({ message: 'Invalid email or password' });
     }
